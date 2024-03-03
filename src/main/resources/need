@@ -1,0 +1,9 @@
+ // st.execute("CREATE TABLE Apartaments (apartament_number INT NOT NULL AUTO_INCREMENT PRIMARY KEY, " +
+                //        "apartament_sity VARCHAR(50) NOT NULL, apartament_adress VARCHAR(50) NOT NULL, " +
+                 //       "apartament_area INT NOT NULL , " +
+                  //      "apartament_rooms INT NOT NULL, apartament_price BIGINT NOT NULL )");
+
+
+                   //  try (PreparedStatement st = conn.prepareStatement("INSERT INTO Apartaments (" +
+                                    //  "apartament_sity, apartament_adress, apartament_area, apartament_rooms, apartament_price) " +
+                                  //    "VALUES(?, ?, ?, ?, ?)")) {
