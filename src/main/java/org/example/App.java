@@ -2,7 +2,7 @@ package org.example;
 
 import org.example.dao.ApartamentsDAO;
 import org.example.dao.ApartamentsDAOImp;
-import org.example.entity.Apartaments;
+import org.example.entity.Apartments;
 import org.example.storage.ConnectionFactory;
 
 import java.sql.Connection;
@@ -17,15 +17,14 @@ public class App {
              Scanner sc = new Scanner(System.in)) {
             ApartamentsDAO dao = new ApartamentsDAOImp(conn);
             dao.createTable();
-            dao.addApattament("Lviv","Lola street,8",58,2,423944);
-            dao.addApattament("Kyiv","Porica street, 12",90,3,78569);
-            dao.addApattament("Odessa","Nevadska street, 34",35,1,24890);
-            dao.addApattament("Marik","Peremogu street, 22",129,4,250999);
+            dao.createSomeApartaments();
 
             while (true) {
                 System.out.println("1: add Apartaments");
                 System.out.println("2: view Apartaments");
                 System.out.println("3: view count");
+                System.out.println("4: view numbers");
+                System.out.println("5: view Apartment by number");
                 System.out.print("-> ");
 
                 String s = sc.nextLine();
@@ -45,16 +44,25 @@ public class App {
                         String prise = sc.nextLine();
                         long prises = Long.parseLong(prise);
 
-                        dao.addApattament(city, adress, are, rooms, prises);
+                        dao.addApartament(city, adress, are, rooms, prises);
                         break;
                     case "2":
-                        List<Apartaments> list = dao.getAll();
-                        for (Apartaments ap : list) {
+                        List<Apartments> list = dao.getAll();
+                        for (Apartments ap : list) {
                             System.out.println(ap);
                         }
                         break;
                     case "3":
                         System.out.println("Count: " + dao.count());
+                        break;
+                    case "4":
+                        dao.printTablesIds();
+                        break;
+                    case "5":
+                        System.out.println("What number do you need?");
+                        String numb = sc.nextLine();
+                        int num = Integer.parseInt(numb);
+                        dao.getByNumber(num);
                         break;
                     default:
                         return;
