@@ -17,6 +17,10 @@ public class App {
              Scanner sc = new Scanner(System.in)) {
             ApartamentsDAO dao = new ApartamentsDAOImp(conn);
             dao.createTable();
+            dao.addApattament("Lviv","Lola street,8",58,2,423944);
+            dao.addApattament("Kyiv","Porica street, 12",90,3,78569);
+            dao.addApattament("Odessa","Nevadska street, 34",35,1,24890);
+            dao.addApattament("Marik","Peremogu street, 22",129,4,250999);
 
             while (true) {
                 System.out.println("1: add Apartaments");

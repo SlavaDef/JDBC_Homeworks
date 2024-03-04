@@ -23,7 +23,8 @@ public class ApartamentsDAOImp implements ApartamentsDAO {
         try {
             try (Statement st = conn.createStatement()) {
                 st.execute("DROP TABLE IF EXISTS Apartaments");
-                st.execute(createSql);
+                st.execute(CREATE_SQL);
+               // st.execute("ALTER TABLE Apartaments AUTO_INCREMENT=20");
             }
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -35,7 +36,7 @@ public class ApartamentsDAOImp implements ApartamentsDAO {
     public void addApattament(String city, String adress, int area, int rooms, long price) {
 
         try {
-                try (PreparedStatement st = conn.prepareStatement(inItSQL) ){
+                try (PreparedStatement st = conn.prepareStatement(IN_IT_SQL) ){
                 st.setString(1, city);
                 st.setString(2, adress);
                 st.setInt(3, area);
