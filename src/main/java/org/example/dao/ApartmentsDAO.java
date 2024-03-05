@@ -4,7 +4,7 @@ import org.example.entity.Apartments;
 
 import java.util.List;
 
-public interface ApartamentsDAO {
+public interface ApartmentsDAO {
 
 
     void createTable();
@@ -12,9 +12,9 @@ public interface ApartamentsDAO {
     List<Apartments> getAll();
     long count();
 
-    void deleteApartament();
+    void deleteApartmentById(int id);
 
-    void updateApartament();
+    void updateApartment(int id, int apartment_rooms, long  apartment_price);
 
     Apartments getByNumber(int id);
 

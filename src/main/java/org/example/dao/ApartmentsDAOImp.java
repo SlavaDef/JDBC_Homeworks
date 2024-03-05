@@ -8,13 +8,13 @@ import java.util.List;
 
 import static org.example.constants.SqlStatements.*;
 
-public class ApartamentsDAOImp implements ApartamentsDAO {
+public class ApartmentsDAOImp implements ApartmentsDAO {
 
     private final Connection conn;
 
     private final String table;
 
-    public ApartamentsDAOImp(Connection conn) {
+    public ApartmentsDAOImp(Connection conn) {
 
         this.conn = conn;
         this.table = "Apartments";
@@ -101,25 +101,38 @@ public class ApartamentsDAOImp implements ApartamentsDAO {
     }
 
     @Override
-    public void deleteApartament() {
+    public void deleteApartmentById(int id) {
+        Apartments res = getByNumber(id);
+
+        try {
+         //   try (Statement st = conn.createStatement()) {
+            //    st.execute("DELETE FROM " + table + " WHERE apartment_number=" + id);
+         //   }
+            try (PreparedStatement st = conn.prepareStatement("DELETE FROM " + table + " WHERE apartment_number=" + id)) {
+                st.executeUpdate();
+            }
+            System.out.println(res + " was deleted");
+
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
 
     }
 
     @Override
-    public void updateApartament() {
+    public void updateApartment(int id, int apartment_rooms, long apartment_price) {
 
-      /*  try {
-            try (PreparedStatement st = conn.prepareStatement("")) {
-                st.setString(1, city);
-                st.setString(2, adress);
-                st.setInt(3, area);
-                st.setInt(4, rooms);
-                st.setLong(5, price);
+        try {
+            try (PreparedStatement st = conn.prepareStatement("UPDATE " + table +
+                    " set apartment_rooms = ?, apartment_price = ?" +
+                    " where apartment_number =" + id)) {
+                st.setInt(1, apartment_rooms);
+                st.setLong(2, apartment_price);
                 st.executeUpdate();
             }
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
-        } */
+        }
     }
 
 
@@ -140,7 +153,6 @@ public class ApartamentsDAOImp implements ApartamentsDAO {
                         apartments.setApartment_rooms(rs.getInt(5));
                         apartments.setApartment_price(rs.getLong(6));
                         res = apartments;
-                        //  res.add(apartments);
                     }
                 }
             }
