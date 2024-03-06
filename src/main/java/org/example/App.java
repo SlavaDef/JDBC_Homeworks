@@ -27,6 +27,11 @@ public class App {
                 System.out.println("5: view Apartment by number");
                 System.out.println("6: delete Apartment by number");
                 System.out.println("7: update Apartment by number");
+                System.out.println("8: view Apartment by city");
+                System.out.println("9: view Apartment by prise");
+                System.out.println("10: view Apartment by street");
+                System.out.println("11: view Apartment by area");
+                System.out.println("12: view Apartment by rooms");
                 System.out.print("-> ");
 
                 String s = sc.nextLine();
@@ -64,7 +69,7 @@ public class App {
                         System.out.println("What number of apartment do you need?");
                         String numb = sc.nextLine();
                         int num = Integer.parseInt(numb);
-                        dao.getByNumber(num);
+                        System.out.println(dao.getByNumber(num));
                         break;
                     case "6":
                         System.out.println("What number of apartment do you want to delete?");
@@ -83,6 +88,44 @@ public class App {
                         String price = sc.nextLine();
                         long priSe = Long.parseLong(price);
                         dao.updateApartment(idS, rM, priSe);
+                        break;
+                    case "8":
+                        System.out.println("Apartment in what city do you need?");
+                        String citY = sc.nextLine();
+
+                        System.out.println(dao.getByCity(citY));
+                        break;
+                    case "9":
+                        System.out.println("Price?");
+                        String pricE = sc.nextLine();
+                        int priCe = Integer.parseInt(pricE);
+                        List<Apartments> lisT = dao.getByPrice(priCe);
+                        for (Apartments ap : lisT) {
+                            System.out.println(ap);
+                        }
+                        break;
+                    case "10":
+                        System.out.println("Apartment in what street do you need?");
+                        String addresS = sc.nextLine();
+                        System.out.println(dao.getByAddress(addresS));
+                        break;
+                    case "11":
+                        System.out.println("What area do you need?");
+                        String areA = sc.nextLine();
+                        int prICe = Integer.parseInt(areA);
+                        List<Apartments> liSt = dao.getByArea(prICe);
+                        for (Apartments ap : liSt) {
+                            System.out.println(ap);
+                        }
+                        break;
+                    case "12":
+                        System.out.println("How many rooms you need?");
+                        String roomS = sc.nextLine();
+                        int rOoms = Integer.parseInt(roomS);
+                        List<Apartments> liST = dao.getByRooms(rOoms);
+                        for (Apartments ap : liST) {
+                            System.out.println(ap);
+                        }
                         break;
                     default:
                         return;

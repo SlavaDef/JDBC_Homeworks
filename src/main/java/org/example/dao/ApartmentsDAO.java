@@ -22,5 +22,14 @@ public interface ApartmentsDAO {
 
     void createSomeApartaments();
 
-    //  Apartaments get
+    Apartments getByCity(String city);
+
+    Apartments getByAddress(String address);
+
+     List<Apartments> getByPrice(int price);
+
+    List<Apartments> getByArea(int area);
+
+    List<Apartments> getByRooms(int rooms);
+
 }

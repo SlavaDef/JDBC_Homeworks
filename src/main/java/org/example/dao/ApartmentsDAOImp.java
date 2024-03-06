@@ -14,10 +14,20 @@ public class ApartmentsDAOImp implements ApartmentsDAO {
 
     private final String table;
 
+    private final Statement st;
+
+    Apartments res;
+
     public ApartmentsDAOImp(Connection conn) {
 
         this.conn = conn;
         this.table = "Apartments";
+        res = new Apartments();
+      try {
+          this.st = conn.createStatement();
+      } catch (SQLException ex) {
+          throw new RuntimeException(ex);
+      }
     }
 
 
@@ -25,15 +35,26 @@ public class ApartmentsDAOImp implements ApartmentsDAO {
     public void createTable() {
 
         try {
-            try (Statement st = conn.createStatement()) {
-                st.execute("DROP TABLE IF EXISTS " + table);
+              st.execute("DROP TABLE IF EXISTS " + table);
                 st.execute(CREATE_SQL);
-                // st.execute("ALTER TABLE Apartments AUTO_INCREMENT=20");
-            }
+                st.execute("ALTER TABLE Apartments AUTO_INCREMENT=50");
+
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
 
+    }
+
+    @Override
+    public void createSomeApartaments() {
+        addApartament("Lviv", "Lola street,8", 58, 2, 423944);
+        addApartament("Kyiv", "Porica street,12", 90, 3, 78569);
+        addApartament("Odessa", "Nevadska street,34", 35, 1, 24890);
+        addApartament("Marik", "Peremogu street,22", 129, 4, 250999);
+        addApartament("New Jerci", "Bonjur street,15", 100, 2, 1423944);
+        addApartament("Keip-Town", "Dell street,68", 115, 4, 178569);
+        addApartament("Kair", "Bombo street,98", 135, 3, 124890);
+        addApartament("Dallas", "St.Jeniffer street,1", 129, 4, 1250999);
     }
 
     @Override
@@ -86,14 +107,12 @@ public class ApartmentsDAOImp implements ApartmentsDAO {
     @Override
     public long count() {
         try {
-            try (Statement st = conn.createStatement()) {
                 try (ResultSet rs = st.executeQuery(COUNT)) {
                     if (rs.next())
                         return rs.getLong(1);
                     else
                         throw new RuntimeException("No Apartmens in base!");
                 }
-            }
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
@@ -102,12 +121,9 @@ public class ApartmentsDAOImp implements ApartmentsDAO {
 
     @Override
     public void deleteApartmentById(int id) {
-        Apartments res = getByNumber(id);
+                res = getByNumber(id);
 
         try {
-         //   try (Statement st = conn.createStatement()) {
-            //    st.execute("DELETE FROM " + table + " WHERE apartment_number=" + id);
-         //   }
             try (PreparedStatement st = conn.prepareStatement("DELETE FROM " + table + " WHERE apartment_number=" + id)) {
                 st.executeUpdate();
             }
@@ -116,7 +132,6 @@ public class ApartmentsDAOImp implements ApartmentsDAO {
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
-
     }
 
     @Override
@@ -138,10 +153,8 @@ public class ApartmentsDAOImp implements ApartmentsDAO {
 
     @Override
     public Apartments getByNumber(int id) {
-        Apartments res = new Apartments();
 
         try {
-            try (Statement st = conn.createStatement()) {
                 try (ResultSet rs = st.executeQuery("SELECT * FROM " + table + " WHERE apartment_number=" + id)) {
                     while (rs.next()) {
                         Apartments apartments = new Apartments();
@@ -155,8 +168,6 @@ public class ApartmentsDAOImp implements ApartmentsDAO {
                         res = apartments;
                     }
                 }
-            }
-            System.out.println(res);
             return res;
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -164,22 +175,9 @@ public class ApartmentsDAOImp implements ApartmentsDAO {
 
     }
 
-    @Override
-    public void createSomeApartaments() {
-        addApartament("Lviv", "Lola street,8", 58, 2, 423944);
-        addApartament("Kyiv", "Porica street, 12", 90, 3, 78569);
-        addApartament("Odessa", "Nevadska street, 34", 35, 1, 24890);
-        addApartament("Marik", "Peremogu street, 22", 129, 4, 250999);
-        addApartament("New Jerci", "Bonjur street,15", 100, 2, 1423944);
-        addApartament("Keip Toun", "Dell street, 68", 115, 4, 178569);
-        addApartament("Kair", "Bombo street, 98", 135, 3, 124890);
-        addApartament("Dallas", "St.Jeniffer street, 1", 129, 4, 1250999);
-    }
 
     @Override
     public void printTablesIds() { // метод виводе всі numbers
-
-        try (Statement st = conn.createStatement()) {
 
             try (ResultSet res = st.executeQuery("SELECT apartment_number FROM " + table)) {
                 while (res.next()) {
@@ -188,12 +186,146 @@ public class ApartmentsDAOImp implements ApartmentsDAO {
                 }
             }
 
-        } catch (SQLException e) {
+        catch (SQLException e) {
             e.printStackTrace();
         }
 
 
     }
+
+    @Override
+    public Apartments getByCity(String city) {
+
+        try {
+
+                try (ResultSet rs = st.executeQuery("SELECT * FROM " + table + " WHERE apartment_sity='" + city+"'")) {
+                    while (rs.next()) {
+                        Apartments apartments = new Apartments();
+
+                        apartments.setApartment_number(rs.getInt(1));
+                        apartments.setApartment_sity(rs.getString(2));
+                        apartments.setApartment_adress(rs.getString(3));
+                        apartments.setApartment_area(rs.getInt(4));
+                        apartments.setApartment_rooms(rs.getInt(5));
+                        apartments.setApartment_price(rs.getLong(6));
+                        res = apartments;
+                    }
+                }
+
+            return res;
+        } catch (SQLException ex) {
+            System.out.println("No Apartments in such city!");
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+    @Override
+    public Apartments getByAddress(String address) {
+        // розумію що на одній вулиці може бути багато квартир, можна зробити через лист, в завданні уточнення не було
+
+        try {
+
+            try (ResultSet rs = st.executeQuery("SELECT * FROM " + table + " WHERE apartment_adress='" + address+"'")) {
+                while (rs.next()) {
+                    Apartments apartments = new Apartments();
+
+                    apartments.setApartment_number(rs.getInt(1));
+                    apartments.setApartment_sity(rs.getString(2));
+                    apartments.setApartment_adress(rs.getString(3));
+                    apartments.setApartment_area(rs.getInt(4));
+                    apartments.setApartment_rooms(rs.getInt(5));
+                    apartments.setApartment_price(rs.getLong(6));
+                    res = apartments;
+                }
+            }
+
+            return res;
+        } catch (SQLException ex) {
+            System.out.println("No Apartments in such address!");
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+    @Override
+    public List<Apartments> getByPrice(int price) {
+        List<Apartments> res = new ArrayList<>();
+
+        try { // тут можливо допрацювати логіку щоб виводилось по price == та price < , чи окремими методами
+                try (ResultSet rs = st.executeQuery("SELECT * FROM " + table + " WHERE apartment_price<" + price)) {
+                    while (rs.next()) {
+                        Apartments apartments = new Apartments();
+                        apartments.setApartment_number(rs.getInt(1));
+                        apartments.setApartment_sity(rs.getString(2));
+                        apartments.setApartment_adress(rs.getString(3));
+                        apartments.setApartment_area(rs.getInt(4));
+                        apartments.setApartment_rooms(rs.getInt(5));
+                        apartments.setApartment_price(rs.getLong(6));
+                        res.add(apartments);
+                    }
+                }
+            return res;
+        } catch (SQLException ex) {
+            System.out.println("No Apartments in such city!");
+            throw new RuntimeException(ex);
+        }
+    }
+
+    @Override
+    public List<Apartments> getByArea(int area) {
+        List<Apartments> res = new ArrayList<>();
+
+        try {
+            try (ResultSet rs = st.executeQuery("SELECT * FROM " + table + " WHERE apartment_area<" + area)) {
+                while (rs.next()) {
+                    Apartments apartments = new Apartments();
+
+                    apartments.setApartment_number(rs.getInt(1));
+                    apartments.setApartment_sity(rs.getString(2));
+                    apartments.setApartment_adress(rs.getString(3));
+                    apartments.setApartment_area(rs.getInt(4));
+                    apartments.setApartment_rooms(rs.getInt(5));
+                    apartments.setApartment_price(rs.getLong(6));
+                    res.add(apartments);
+                }
+            }
+            return res;
+        } catch (SQLException ex) {
+            System.out.println("No Apartments in such area!");
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+    @Override
+    public List<Apartments> getByRooms(int rooms) {
+        List<Apartments> res = new ArrayList<>();
+
+        try {
+            try (ResultSet rs = st.executeQuery("SELECT * FROM " + table + " WHERE apartment_rooms=" + rooms)) {
+                while (rs.next()) {
+                    Apartments apartments = new Apartments();
+
+                    apartments.setApartment_number(rs.getInt(1));
+                    apartments.setApartment_sity(rs.getString(2));
+                    apartments.setApartment_adress(rs.getString(3));
+                    apartments.setApartment_area(rs.getInt(4));
+                    apartments.setApartment_rooms(rs.getInt(5));
+                    apartments.setApartment_price(rs.getLong(6));
+                    res.add(apartments);
+                }
+            }
+            return res;
+        } catch (SQLException ex) {
+            System.out.println("No Apartments with such rooms!");
+            throw new RuntimeException(ex);
+        }
+
+    }
+
+
+
 }
 
 

@@ -80,13 +80,13 @@ public class Apartments {
 
     @Override
     public String toString() {
-        return "Apartments{" +
+        return "Apartments = " +
                 " apartment_number=" + apartment_number +
                 ", apartment_sity='" + apartment_sity + '\'' +
                 ", apartment_adress='" + apartment_adress + '\'' +
                 ", apartment_area=" + apartment_area +"/m_2"+
                 ", apartment_rooms=" + apartment_rooms +
-                ", apartment_price=" + apartment_price + "$ "+
-                '}';
+                ", apartment_price=" + apartment_price + "$ ";
+
     }
 }
